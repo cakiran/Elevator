@@ -12,11 +12,6 @@ namespace ElevatorTests
     [TestFixture]
     public class ElevatorPodControllerTests
     {
-        [SetUp]
-        public void Setup()
-        {
-           
-        }
 
         [Test]
         public void MovePod_ValidInput_ReturnsEmptyString()
