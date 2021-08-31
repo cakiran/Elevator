@@ -8,34 +8,51 @@ namespace Elevator
 {
     public interface IPodController
     {
-        Task<string> MovePod(int value, MoveDirection moveDirection);
-    }
+        void StartPod();
+		void AddFloorFromInside(int value);
+		void AddFloorFromOutside(int value);
+	}
 
     public class ElevatorPodController : IPodController
     {
+		private bool _running = true;
 		private IPod elevatorPod;
+
         public ElevatorPodController(IPod _elevatorPod)
         {
 			elevatorPod = _elevatorPod;
+			ControlElevator controlElevator = new ControlElevator();
+			controlElevator.ElevatorEvent += new EventHandler(controlElevator_Stop);
+		}
 
-		}
-        public async Task<string> MovePod(int floor,MoveDirection moveDirection)
+        private void controlElevator_Stop(object sender, EventArgs e)
         {
-			string errorMessage = string.Empty;
-			switch (moveDirection)
-			{
-				case MoveDirection.Down:
-					errorMessage = await elevatorPod.Descend(floor);
-					break;
-				case MoveDirection.Up:
-					errorMessage = await elevatorPod.Ascend(floor);
-					break;
-				default:
-					break;
-			}
-			return errorMessage;
+			_running = false;
 		}
-	}
+
+        public async void StartPod()
+        {
+			await Task.Run(() => MovePodUpAndDown());
+		}
+
+		public void AddFloorFromInside(int value)
+        {
+			elevatorPod.FloorReady[value] = true;
+			elevatorPod.SensorData.NumberOfPassengers++;
+		}
+		public void AddFloorFromOutside(int value)
+		{
+			elevatorPod.FloorReady[value] = true;
+		}
+		private async Task MovePodUpAndDown()
+        {
+			while (_running)
+			{
+				await elevatorPod.Ascend();
+				await elevatorPod.Descend();
+			}
+		}
+    }
 	public enum MoveDirection
 	{
 		Up,
