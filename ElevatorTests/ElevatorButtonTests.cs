@@ -13,7 +13,7 @@ namespace ElevatorTests
         public void Setup()
         {
             var elevatorPodControllerMock = new Mock<IPodController>();
-            _elevatorButton = new ElevatorButton(elevatorPodControllerMock.Object);
+            _elevatorButton = new ElevatorButtonOutside(elevatorPodControllerMock.Object);
         }
         [Test]
         public void Press_InvalidDirection_Input_ReturnsErrorMessage()
@@ -38,7 +38,7 @@ namespace ElevatorTests
         {
             //arrange
             var elevatorPodControllerMock = new Mock<IPodController>();
-            var elevatorButton = new ElevatorButton(elevatorPodControllerMock.Object);
+            var elevatorButton = new ElevatorButtonOutside(elevatorPodControllerMock.Object);
             //act
             var res = elevatorButton.Press("u8");
             //assert

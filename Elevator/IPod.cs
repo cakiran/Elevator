@@ -12,40 +12,46 @@ namespace Elevator
 		int CurrentFloor { get; set; }
 		int TopFloor { get; set; }
 		bool[] FloorReady { get; set; }
+		bool[] PassengerIdentifierList { get; set; }
+		List<int> PassengersToFloorsList { get; set; }
 		SensorData SensorData { get; set; }
 		int MaxWeight { get; set; }
 		Task<string> Ascend();
 		Task<string> Descend();
-		Task Stay();
+		Task Stay(int value);
 	}
-    public class ElevatorPod : IPod
-    {
-		private int _currentFloor = 1;
-		public int CurrentFloor { get => _currentFloor; set => _currentFloor = value; }
-		private int _topFloor;
-		public int TopFloor { get => _topFloor; set => _topFloor = value; }
-		private bool[] _floorReady = new bool[11];
-		public bool[] FloorReady { get => _floorReady; set => _floorReady = value; }
-		private SensorData _sensorData = new SensorData();
-        public SensorData SensorData { get => _sensorData; set => _sensorData = value; }
-		private int _maxWeight;
-        public int MaxWeight { get => _maxWeight; set => _maxWeight = value; }
-
-        public ElevatorPod(int NumberOfFloors = 10)
+	public class ElevatorPod : IPod
+	{
+		public int CurrentFloor { get;set; } = 1;
+		public int TopFloor { get ; set ; }
+		public bool[] FloorReady { get ; set; } = new bool[11];
+		public SensorData SensorData { get; set; } = new SensorData();
+		public int MaxWeight { get; set; }
+		public bool[] PassengerIdentifierList { get; set; } = new bool[11];
+		public List<int> PassengersToFloorsList { get; set; } = new  List<int>();
+		public ElevatorPod(int NumberOfFloors = 10)
 		{
 			TopFloor = NumberOfFloors;
 		}
 
 		public async Task<string> Descend()
 		{
-
 			for (int i = TopFloor - 1; i >= 1; i--)
 			{
 				if (FloorReady[i])
 				{
 					SensorData.CurrentFloor = i;
 					SensorData.NextFloor = i + 1;
-					await Stay();
+					/*
+				Bonus Enhancement:
+				If the elevator has reached its weight limit, 
+				it should stop only at floors that were selected from inside the elevator (to let passengers out), 
+				until it is no longer at the max weight limit.
+				  */
+					if (SensorData.IsAboveMaxAllowedWeight && PassengerIdentifierList[i] || !SensorData.IsAboveMaxAllowedWeight)
+						await Stay(i);
+					else
+						await LogWriter.LogAsync(SensorData);
 					FloorReady[i] = false;
 					await Task.Delay(TimeSpan.FromSeconds(3));
 				}
@@ -71,7 +77,10 @@ namespace Elevator
 				{
 					SensorData.CurrentFloor = i;
 					SensorData.NextFloor = i + 1;
-					await Stay();
+					if (SensorData.IsAboveMaxAllowedWeight && PassengerIdentifierList[i] || !SensorData.IsAboveMaxAllowedWeight) //Bonus Enhancement Logic
+						await Stay(i);
+					else
+						await LogWriter.LogAsync(SensorData);
 					FloorReady[i] = false;
 					await Task.Delay(TimeSpan.FromSeconds(3));
 				}
@@ -93,14 +102,22 @@ namespace Elevator
 			return string.Empty;
 		}
 
-		public async Task Stay()
-        {
+		public async Task Stay(int passengerIdentifier)
+		{
 			SensorData.PodStatus = PodStatus.Stopped;
+			if (PassengerIdentifierList[passengerIdentifier])
+			{
+				PassengerIdentifierList[passengerIdentifier] = false;
+				foreach(var item in PassengersToFloorsList.Where(x => x == passengerIdentifier))
+                {
+					--SensorData.NumberOfPassengers;
+				}
+				PassengersToFloorsList.RemoveAll(x => x == passengerIdentifier);
+			}
 			await LogWriter.LogAsync(SensorData);
 			await Task.Delay(TimeSpan.FromSeconds(1));
-			--SensorData.NumberOfPassengers;
 		}
-    }
+	}
 
 	public class SensorData
     {

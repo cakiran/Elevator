@@ -14,20 +14,20 @@ namespace Elevator
             var performElevatorPodMove = Task.Run(() => ProcessElevatorQueue());
             while (_running)
             {
-                Console.WriteLine("Button presses from outside the elevator is done using '5D' or '8U' and from inside is done using just number of the floor like '8'");
+                Console.WriteLine("Button presses from outside the elevator is done using 'D5' or 'U8' and from inside is done using just number of the floor like '8' and then press enter.");
                 string directionAndFloor = Console.ReadLine();
                 _floorRequestQueue.Enqueue(directionAndFloor);
             }
-            Console.WriteLine("Done");
+            Console.WriteLine("Elevator turned Off!");
             Console.ReadKey();
         }
 
         private static void ProcessElevatorQueue()
         {
-            bool _running = true;
             IPod elevatorPod = new ElevatorPod();
             IPodController podController = new ElevatorPodController(elevatorPod);
-            IButton elevatorButton = new ElevatorButton(podController);
+            IButton elevatorButtonOutside = new ElevatorButtonOutside(podController);
+            IButton elevatorButtonInside = new ElevatorButtonInside(podController);
             ControlElevator controlElevator = new ControlElevator();
             controlElevator.ElevatorEvent += new EventHandler(controlElevator_Stop);
             while (_running)
@@ -40,7 +40,10 @@ namespace Elevator
                     {
                         if(directionAndFloor.Trim().ToLower() == "q")
                             controlElevator.Stop();
-                         elevatorButton.Press(directionAndFloor);
+                        if(directionAndFloor.Trim().ToLower().StartsWith("u") || directionAndFloor.Trim().ToLower().StartsWith("d") || directionAndFloor.Trim().ToLower().StartsWith("q"))
+                         elevatorButtonOutside.Press(directionAndFloor);
+                        if(int.TryParse(directionAndFloor,out int floor))
+                            elevatorButtonInside.Press(directionAndFloor);
                     }
                 }
             }
