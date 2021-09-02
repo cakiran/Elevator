@@ -1,4 +1,5 @@
 ﻿using Elevator;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,51 +12,52 @@ namespace ElevatorTests
     [TestFixture]
     public class ElevatorPodTests
     {
-        private IPod _elevatorPod;
-        [SetUp]
-        public void Setup()
-        {
-            _elevatorPod = new ElevatorPod();
-        }
-        [Test]
-        public void Ascend_WrongDirectionChoice_ReturnsErrorMessage()
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(9)]
+        public async Task Descend_WhenExactFloorIsReached_ResetsTrueFloorFlagToFalse(int floor)
         {
             //arrange
-            _elevatorPod.CurrentFloor = 5;
+            var loggerMock = new Mock<ILogger>();
+            var elevatorPod = new ElevatorPod(loggerMock.Object);
+            bool[] floorReady = new bool[11];
+            floorReady[floor] = true;
+            elevatorPod.FloorReady = floorReady;
             //act
-            var res = _elevatorPod.Ascend(3);
+            await elevatorPod.Descend();
             //assert
-            Assert.AreSame(res.Result, "Wrong Direction Choice.");
+            Assert.IsFalse(floorReady[floor]);
         }
-        [Test]
-        public void Descend_WrongDirectionChoice_ReturnsErrorMessage()
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(10)]
+        public async Task Ascend_WhenExactFloorIsReached_ResetsTrueFloorFlagToFalse(int floor)
         {
             //arrange
-            _elevatorPod.CurrentFloor = 3;
+            var loggerMock = new Mock<ILogger>();
+            var elevatorPod = new ElevatorPod(loggerMock.Object);
+            bool[] floorReady = new bool[11];
+            floorReady[floor] = true;
+            elevatorPod.FloorReady = floorReady;
             //act
-            var res = _elevatorPod.Descend(5);
+            await elevatorPod.Ascend();
             //assert
-            Assert.AreSame(res.Result, "Wrong Direction Choice.");
+            Assert.IsFalse(floorReady[floor]);
         }
         [Test]
-        public void Ascend_CorrectDirectionChoice_ReturnsEmptyString()
+        public async Task Stay_WhenExactFloorIsReached_StopsThePod()
         {
             //arrange
-            _elevatorPod.CurrentFloor = 5;
+            var loggerMock = new Mock<ILogger>();
+            var elevatorPod = new ElevatorPod(loggerMock.Object);
+            bool[] floorReady = new bool[11];
+            floorReady[4] = true;
+            elevatorPod.FloorReady = floorReady;
             //act
-            var res = _elevatorPod.Ascend(8);
+            await elevatorPod.Stay(4);
             //assert
-            Assert.AreSame(res.Result, "");
-        }
-        [Test]
-        public void Descend_CorrectDirectionChoice_ReturnsEmptyString()
-        {
-            //arrange
-            _elevatorPod.CurrentFloor = 9;
-            //act
-            var res = _elevatorPod.Descend(8);
-            //assert
-            Assert.AreSame(res.Result, "");
+            Assert.That(elevatorPod.SensorData.PodStatus == PodStatus.Stopped);
+            loggerMock.Verify(m => m.LogAsync(elevatorPod.SensorData), Times.Exactly(1));
         }
     }
 }

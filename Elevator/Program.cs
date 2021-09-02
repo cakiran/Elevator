@@ -14,7 +14,7 @@ namespace Elevator
             var performElevatorPodMove = Task.Run(() => ProcessElevatorQueue());
             while (_running)
             {
-                Console.WriteLine("Button presses from outside the elevator is done using 'D5' or 'U8' and from inside is done using just number of the floor like '8' and then press enter.");
+                Console.WriteLine("Button presses from outside the elevator is done for example using 'D5' or 'U8', and from inside is done using just number of the floor like '8' and then please press enter.");
                 string directionAndFloor = Console.ReadLine();
                 _floorRequestQueue.Enqueue(directionAndFloor);
             }
@@ -22,12 +22,14 @@ namespace Elevator
             Console.ReadKey();
         }
 
+        #region Private Methods
         private static void ProcessElevatorQueue()
         {
-            IPod elevatorPod = new ElevatorPod();
+            ILogger logger = new LogWriter();
+            IPod elevatorPod = new ElevatorPod(logger);
             IPodController podController = new ElevatorPodController(elevatorPod);
-            IButton elevatorButtonOutside = new ElevatorButtonOutside(podController);
-            IButton elevatorButtonInside = new ElevatorButtonInside(podController);
+            IButton elevatorButtonOutside = new ElevatorButtonOutside(podController, logger);
+            IButton elevatorButtonInside = new ElevatorButtonInside(podController, logger);
             ControlElevator controlElevator = new ControlElevator();
             controlElevator.ElevatorEvent += new EventHandler(controlElevator_Stop);
             while (_running)
@@ -38,23 +40,24 @@ namespace Elevator
                     string directionAndFloor;
                     while (_floorRequestQueue.TryDequeue(out directionAndFloor))
                     {
-                        if(directionAndFloor.Trim().ToLower() == "q")
+                        if (directionAndFloor.Trim().ToLower() == "q")
                             controlElevator.Stop();
-                        if(directionAndFloor.Trim().ToLower().StartsWith("u") || directionAndFloor.Trim().ToLower().StartsWith("d") || directionAndFloor.Trim().ToLower().StartsWith("q"))
-                         elevatorButtonOutside.Press(directionAndFloor);
-                        if(int.TryParse(directionAndFloor,out int floor))
+                        if (directionAndFloor.Trim().ToLower().StartsWith("u") || directionAndFloor.Trim().ToLower().StartsWith("d") || directionAndFloor.Trim().ToLower().StartsWith("q"))
+                            elevatorButtonOutside.Press(directionAndFloor);
+                        if (int.TryParse(directionAndFloor, out int floor))
                             elevatorButtonInside.Press(directionAndFloor);
                     }
                 }
             }
         }
-
         private static void controlElevator_Stop(object sender, EventArgs e)
         {
             _running = false;
-        }
+        } 
+        #endregion
     }
 
+    #region ControlElevator Event
     public class ControlElevator
     {
         public event EventHandler ElevatorEvent;
@@ -63,5 +66,6 @@ namespace Elevator
         {
             ElevatorEvent?.Invoke(this, EventArgs.Empty);
         }
-    }
+    } 
+    #endregion
 }

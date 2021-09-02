@@ -7,17 +7,31 @@ using System.Threading.Tasks;
 
 namespace Elevator
 {
-    public class LogWriter
+    public interface ILogger
     {
-        public static async Task LogAsync(SensorData sensorData)
+        Task LogAsync(SensorData sensorData);
+        Task LogFloorAsync(string floorRequest);
+    }
+    public class LogWriter : ILogger
+    {
+        #region Constructor
+        public LogWriter()
+        {
+
+        }
+        #endregion
+
+        #region Public Methods
+        public async Task LogAsync(SensorData sensorData)
         {
             using StreamWriter file = new("ElevatorLog.txt", append: true);
-            await file.WriteLineAsync($"Timestamp - {DateTime.Now} Floor - {sensorData.CurrentFloor} PodStatus - {sensorData.PodStatus} IsAboveMaxAllowedWeight(max 1000lbs) - {sensorData.IsAboveMaxAllowedWeight} Passengers - {sensorData.NumberOfPassengers}");
+            await file.WriteLineAsync($"Timestamp - {DateTime.Now} Floor - {sensorData.CurrentFloor} PodStatus - {sensorData.PodStatus} IsAboveMaxAllowedWeight(max 1000lbs) - {sensorData.IsAboveMaxAllowedWeight} Passengers - {sensorData.NumberOfPassengers} Direction - {sensorData.PodDirection.ToString().ToUpper()}");
         }
-        public static async Task LogFloorAsync(string floorRequest)
+        public async Task LogFloorAsync(string floorRequest)
         {
             using StreamWriter file = new("ElevatorLog.txt", append: true);
             await file.WriteLineAsync($"Timestamp - {DateTime.Now} FloorRequest - {floorRequest}");
-        }
+        } 
+        #endregion
     }
 }

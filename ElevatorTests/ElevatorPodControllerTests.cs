@@ -12,32 +12,24 @@ namespace ElevatorTests
     [TestFixture]
     public class ElevatorPodControllerTests
     {
+        [Test]
+        public void AddFloorFromInside_WhenFloorIsInput_SetFloorReadyAndAddsToPassengersList()
+        {
+            //arrange
+            var elevatorPod = new Mock<IPod>();
+            elevatorPod.Setup(x => x.FloorReady).Returns(new bool[11]);
+            elevatorPod.Setup(x => x.PassengerIdentifierList).Returns(new bool[11]);
+            elevatorPod.Setup(x => x.SensorData).Returns(new SensorData());
+            elevatorPod.Setup(x => x.PassengersToFloorsList).Returns(new List<int>());
+            var elevatorController = new ElevatorPodController(elevatorPod.Object);
+            //act
+             elevatorController.AddFloorFromInside(8);
+            //assert
+            Assert.That(elevatorPod.Object.FloorReady[8] == true);
+            Assert.That(elevatorPod.Object.PassengersToFloorsList.Count > 0);
+            Assert.That(elevatorPod.Object.SensorData.NumberOfPassengers > 0);
+            Assert.That(elevatorController.Running == true);
+        }
 
-        [Test]
-        public void MovePod_ValidInput_ReturnsEmptyString()
-        {
-            //arrange
-            var elevatorPodMock = new Mock<IPod>();
-            elevatorPodMock.Setup(x => x.CurrentFloor).Returns(4);
-            elevatorPodMock.Setup(x => x.Descend(1)).Returns(Task.FromResult(string.Empty));
-            var elevatorPodController = new ElevatorPodController(elevatorPodMock.Object);
-            //act
-            var res = elevatorPodController.MovePod(1,MoveDirection.Down);
-            //assert
-            Assert.AreSame(res.Result, string.Empty);
-        }
-        [Test]
-        public async Task MovePod_InvalidFloorInput_ReturnsErrorMessage()
-        {
-            //arrange
-            var elevatorPodMock = new Mock<IPod>();
-            elevatorPodMock.Setup(x => x.CurrentFloor).Returns(4);
-            elevatorPodMock.Setup(x => x.Ascend(9999)).Returns(Task.FromResult("Invalid floor entry. Please select floors from 1 to 10."));
-            var elevatorPodController = new ElevatorPodController(elevatorPodMock.Object);
-            //act
-            var res = await elevatorPodController.MovePod(9999, MoveDirection.Up);
-            //assert
-            Assert.AreSame(res, "Invalid floor entry. Please select floors from 1 to 10.");
-        }
     }
 }
