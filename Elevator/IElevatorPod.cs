@@ -134,7 +134,7 @@ namespace Elevator
         {
             get
             {
-                if (NumberOfPassengers * 100 > 1000)
+                if (NumberOfPassengers * 150 > 1500)
                     return true;
                 else return false;
             }

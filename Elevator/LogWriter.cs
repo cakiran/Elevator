@@ -25,7 +25,7 @@ namespace Elevator
         public async Task LogAsync(SensorData sensorData)
         {
             using StreamWriter file = new("ElevatorLog.txt", append: true);
-            await file.WriteLineAsync($"Timestamp - {DateTime.Now} Floor - {sensorData.CurrentFloor} PodStatus - {sensorData.PodStatus} IsAboveMaxAllowedWeight(max 1000lbs) - {sensorData.IsAboveMaxAllowedWeight} Passengers - {sensorData.NumberOfPassengers} Direction - {sensorData.PodDirection.ToString().ToUpper()}");
+            await file.WriteLineAsync($"Timestamp - {DateTime.Now} Floor - {sensorData.CurrentFloor} PodStatus - {sensorData.PodStatus} IsAboveMaxAllowedWeight(max 1500lbs) - {sensorData.IsAboveMaxAllowedWeight} Passengers - {sensorData.NumberOfPassengers} Direction - {sensorData.PodDirection.ToString().ToUpper()}");
         }
         public async Task LogFloorAsync(string floorRequest)
         {
