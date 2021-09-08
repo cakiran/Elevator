@@ -16,7 +16,7 @@ namespace ElevatorTests
         public void AddFloorFromInside_WhenFloorIsInput_SetFloorReadyAndAddsToPassengersList()
         {
             //arrange
-            var elevatorPod = new Mock<IPod>();
+            var elevatorPod = new Mock<IElevatorPod>();
             elevatorPod.Setup(x => x.FloorReady).Returns(new bool[11]);
             elevatorPod.Setup(x => x.PassengerIdentifierList).Returns(new bool[11]);
             elevatorPod.Setup(x => x.SensorData).Returns(new SensorData());

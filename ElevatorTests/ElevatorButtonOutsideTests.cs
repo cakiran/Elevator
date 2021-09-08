@@ -12,7 +12,7 @@ namespace ElevatorTests
         public void Press_ValidDirectionAndFloorInput_Runs_MovePodUpAndDown_AddFloorFromOutside_LogFloorAsync_Methods()
         {
             //arrange
-            var elevatorPodControllerMock = new Mock<IPodController>();
+            var elevatorPodControllerMock = new Mock<IElevatorPodController>();
             var loggerMock = new Mock<ILogger>();
             var elevatorButtonOutside = new ElevatorButtonOutside(elevatorPodControllerMock.Object, loggerMock.Object);
             //act

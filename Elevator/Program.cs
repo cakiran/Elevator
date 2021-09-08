@@ -26,8 +26,8 @@ namespace Elevator
         private static void ProcessElevatorQueue()
         {
             ILogger logger = new LogWriter();
-            IPod elevatorPod = new ElevatorPod(logger);
-            IPodController podController = new ElevatorPodController(elevatorPod);
+            IElevatorPod elevatorPod = new ElevatorPod(logger);
+            IElevatorPodController podController = new ElevatorPodController(elevatorPod);
             IButton elevatorButtonOutside = new ElevatorButtonOutside(podController, logger);
             IButton elevatorButtonInside = new ElevatorButtonInside(podController, logger);
             ControlElevator controlElevator = new ControlElevator();

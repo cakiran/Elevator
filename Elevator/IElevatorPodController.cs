@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Elevator
 {
-    public interface IPodController
+    public interface IElevatorPodController
     {
 		void AddFloorFromInside(int value);
 		void AddFloorFromOutside(int value);
 		Task MovePodUpAndDown();
 	}
 
-    public class ElevatorPodController : IPodController
+    public class ElevatorPodController : IElevatorPodController
     {
         #region Public Fields
         public bool Running = true;
@@ -21,13 +21,13 @@ namespace Elevator
 
         #region Private Fields
 
-        private IPod elevatorPod;
+        private IElevatorPod elevatorPod;
         ControlElevator controlElevator = new ControlElevator(); 
         #endregion
 
 
         #region Constructor
-        public ElevatorPodController(IPod _elevatorPod)
+        public ElevatorPodController(IElevatorPod _elevatorPod)
         {
             elevatorPod = _elevatorPod;
             controlElevator.ElevatorEvent += new EventHandler(controlElevator_Stop);

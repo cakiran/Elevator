@@ -14,9 +14,9 @@ namespace Elevator
     #region ElevatorButtonOutside
     public class ElevatorButtonOutside : IButton
     {
-        private IPodController elevatorPodController;
+        private IElevatorPodController elevatorPodController;
         private ILogger logger;
-        public ElevatorButtonOutside(IPodController _podController, ILogger _logger)
+        public ElevatorButtonOutside(IElevatorPodController _podController, ILogger _logger)
         {
             elevatorPodController = _podController;
             logger = _logger;
@@ -48,9 +48,9 @@ namespace Elevator
 
     public class ElevatorButtonInside : IButton
     {
-        private IPodController elevatorPodController;
+        private IElevatorPodController elevatorPodController;
         private ILogger logger;
-        public ElevatorButtonInside(IPodController _podController, ILogger _logger)
+        public ElevatorButtonInside(IElevatorPodController _podController, ILogger _logger)
         {
             elevatorPodController = _podController;
             logger = _logger;

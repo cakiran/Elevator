@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Elevator
 {
     
-    public interface IPod
+    public interface IElevatorPod
     {
         int CurrentFloor { get; set; }
         int TopFloor { get; set; }
@@ -22,7 +22,7 @@ namespace Elevator
         Task Stay(int value);
     } 
     
-    public class ElevatorPod : IPod
+    public class ElevatorPod : IElevatorPod
 	{
         #region Public Properties
         public int CurrentFloor { get; set; } = 1;
