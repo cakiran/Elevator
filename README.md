@@ -4,7 +4,7 @@ This is a C# console application which simulates an elevator that asynchronously
 <br/><br/>
 Elevator Logs:
 <br/><br/>
-![image](https://user-images.githubusercontent.com/12031984/131834719-1d53eff8-c48b-4dff-b2b0-aa002b4da4b9.png)
+![image](https://user-images.githubusercontent.com/12031984/132577909-82a3b122-55e2-41dc-a535-60b3b45f4859.png)
 <br/><br/>
 Test Results:
 <br/><br/>
