@@ -38,7 +38,11 @@ namespace Elevator
                 }
                 elevatorPodController.AddFloorFromOutside(floor);
                 await logger.LogFloorAsync(directionAndFloor);
-                await elevatorPodController.MovePodUpAndDown();
+                if (!elevatorPodController.Running)
+                {
+                    elevatorPodController.Running = true;
+                    await elevatorPodController.MovePodUpAndDown();
+                }
             }
         }
     }

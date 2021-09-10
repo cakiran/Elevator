@@ -8,6 +8,7 @@ namespace Elevator
 {
     public interface IElevatorPodController
     {
+        bool Running { get; set; }
 		void AddFloorFromInside(int value);
 		void AddFloorFromOutside(int value);
 		Task MovePodUpAndDown();
@@ -16,7 +17,7 @@ namespace Elevator
     public class ElevatorPodController : IElevatorPodController
     {
         #region Public Fields
-        public bool Running = true;
+        public bool Running { get; set; }  = false;
         #endregion
 
         #region Private Fields
@@ -37,7 +38,6 @@ namespace Elevator
         #region Public Methods
         public void AddFloorFromInside(int value)
         {
-            Running = true;
             elevatorPod.FloorReady[value] = true;
             elevatorPod.PassengerIdentifierList[value] = true;
             ++elevatorPod.SensorData.NumberOfPassengers;
@@ -45,7 +45,6 @@ namespace Elevator
         }
         public void AddFloorFromOutside(int value)
         {
-            Running = true;
             if (value == -1)
             {
                 controlElevator.Stop();

@@ -23,7 +23,7 @@ namespace Elevator
         }
 
         #region Private Methods
-        private static void ProcessElevatorQueue()
+        private  static void ProcessElevatorQueue()
         {
             ILogger logger = new LogWriter();
             IElevatorPod elevatorPod = new ElevatorPod(logger);
@@ -42,10 +42,10 @@ namespace Elevator
                     {
                         if (directionAndFloor.Trim().ToLower() == "q")
                             controlElevator.Stop();
-                        if (directionAndFloor.Trim().ToLower().StartsWith("u") || directionAndFloor.Trim().ToLower().StartsWith("d") || directionAndFloor.Trim().ToLower().StartsWith("q"))
-                            elevatorButtonOutside.Press(directionAndFloor);
                         if (int.TryParse(directionAndFloor, out int floor))
                             elevatorButtonInside.Press(directionAndFloor);
+                        if (directionAndFloor.Trim().ToLower().StartsWith("u") || directionAndFloor.Trim().ToLower().StartsWith("d") || directionAndFloor.Trim().ToLower().StartsWith("q"))
+                            elevatorButtonOutside.Press(directionAndFloor);
                     }
                 }
             }
