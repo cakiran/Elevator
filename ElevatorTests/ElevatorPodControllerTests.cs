@@ -28,7 +28,6 @@ namespace ElevatorTests
             Assert.That(elevatorPod.Object.FloorReady[8] == true);
             Assert.That(elevatorPod.Object.PassengersToFloorsList.Count > 0);
             Assert.That(elevatorPod.Object.SensorData.NumberOfPassengers > 0);
-            Assert.That(elevatorController.Running == true);
         }
 
     }
