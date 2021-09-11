@@ -32,8 +32,8 @@ namespace Elevator
             string directionRemoved = directionAndFloor.Remove(0, 1);
             if (int.TryParse(directionRemoved, out floor))
             {
-                if (floor < 1 || floor > 11)
-                {
+                if (floor < 1 || floor >10)
+                { 
                     Console.WriteLine("Invalid floor entry. Please select floors from 1 to 10.");
                 }
                 elevatorPodController.AddFloorFromOutside(floor);
@@ -65,14 +65,16 @@ namespace Elevator
             var isNumeric = int.TryParse(directionAndFloor, out floor);
             if (isNumeric)
             {
-                if (floor < 1 || floor > 11)
+                if (floor < 1 || floor > 10)
                 {
                     Console.WriteLine("Invalid floor entry. Please select floors from 1 to 10.");
                 }
                 elevatorPodController.AddFloorFromInside(floor);
             }
-            await logger.LogFloorAsync(directionAndFloor);
+            if (elevatorPodController.Running)
+                await logger.LogFloorAsync(directionAndFloor);
         }
     } 
     #endregion
+
 }

@@ -13,8 +13,10 @@ namespace ElevatorTests
         {
             //arrange
             var elevatorPodControllerMock = new Mock<IElevatorPodController>();
+            elevatorPodControllerMock.Setup(x => x.Running).Returns(true);
             var loggerMock = new Mock<ILogger>();
             var elevatorButtonInside = new ElevatorButtonInside(elevatorPodControllerMock.Object, loggerMock.Object);
+         
             //act
             var res = elevatorButtonInside.Press("8");
             //assert

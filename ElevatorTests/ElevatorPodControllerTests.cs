@@ -18,15 +18,13 @@ namespace ElevatorTests
             //arrange
             var elevatorPod = new Mock<IElevatorPod>();
             elevatorPod.Setup(x => x.FloorReady).Returns(new bool[11]);
-            elevatorPod.Setup(x => x.PassengerIdentifierList).Returns(new bool[11]);
-            elevatorPod.Setup(x => x.SensorData).Returns(new SensorData());
-            elevatorPod.Setup(x => x.PassengersToFloorsList).Returns(new List<int>());
+            elevatorPod.Setup(x => x.SensorData).Returns(SensorData.Instance);
             var elevatorController = new ElevatorPodController(elevatorPod.Object);
+            elevatorController.Running = true;
             //act
              elevatorController.AddFloorFromInside(8);
             //assert
             Assert.That(elevatorPod.Object.FloorReady[8] == true);
-            Assert.That(elevatorPod.Object.PassengersToFloorsList.Count > 0);
             Assert.That(elevatorPod.Object.SensorData.NumberOfPassengers > 0);
         }
 

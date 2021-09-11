@@ -23,7 +23,8 @@ namespace Elevator
         #region Private Fields
 
         private IElevatorPod elevatorPod;
-        ControlElevator controlElevator = new ControlElevator(); 
+        ControlElevator controlElevator = new ControlElevator();
+        private static readonly object padlock = new object();
         #endregion
 
 
@@ -32,16 +33,20 @@ namespace Elevator
         {
             elevatorPod = _elevatorPod;
             controlElevator.ElevatorEvent += new EventHandler(controlElevator_Stop);
-        } 
+        }
         #endregion
 
         #region Public Methods
         public void AddFloorFromInside(int value)
         {
-            elevatorPod.FloorReady[value] = true;
-            elevatorPod.PassengerIdentifierList[value] = true;
-            ++elevatorPod.SensorData.NumberOfPassengers;
-            elevatorPod.PassengersToFloorsList.Add(value);
+            if (Running)
+            {
+                lock (padlock)
+                {
+                    elevatorPod.FloorReady[value] = true;
+                    elevatorPod.SensorData.PassengersToFloorsList.Add(value);
+                }
+            }
         }
         public void AddFloorFromOutside(int value)
         {
@@ -50,15 +55,18 @@ namespace Elevator
                 controlElevator.Stop();
                 return;
             }
-            elevatorPod.FloorReady[value] = true;
+            if(!elevatorPod.SensorData.IsAboveMaxAllowedWeight) //Bonus Enhancement Enhance the application as follows: If the elevator has reached its weight limit, it should stop only at floors that were selected from inside the elevator (to let passengers out), until it is no longer at the max weight limit.
+                elevatorPod.FloorReady[value] = true;
         }
         public async Task MovePodUpAndDown()
         {
             while (Running)
             {
-                await elevatorPod.Ascend();
+                if(elevatorPod.SensorData.CurrentFloor == 1 || elevatorPod.SensorData.CurrentFloor == 0)
+                await elevatorPod.Ascend(); 
+                else
                 await elevatorPod.Descend();
-                if (elevatorPod.FloorReady.All(x => x == false) && elevatorPod.PassengerIdentifierList.All(x => x == false) && elevatorPod.PassengersToFloorsList.Count() < 1)
+                if (elevatorPod.FloorReady.All(x => x == false) && elevatorPod.SensorData.PassengersToFloorsList.Count() < 1)
                     controlElevator.Stop();
             }
         }
