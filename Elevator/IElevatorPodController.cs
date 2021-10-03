@@ -55,7 +55,9 @@ namespace Elevator
                 controlElevator.Stop();
                 return;
             }
-            if(!elevatorPod.SensorData.IsAboveMaxAllowedWeight) //Bonus Enhancement Enhance the application as follows: If the elevator has reached its weight limit, it should stop only at floors that were selected from inside the elevator (to let passengers out), until it is no longer at the max weight limit.
+            /*If the elevator has reached its weight limit, it should stop only at floors
+            that were selected from inside the elevator (to let passengers out), until it is no longer at the max weight limit.*/
+            if (!elevatorPod.SensorData.IsAboveMaxAllowedWeight) 
                 elevatorPod.FloorReady[value] = true;
         }
         public async Task MovePodUpAndDown()
