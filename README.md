@@ -4,8 +4,11 @@ This is a C# console application which simulates an elevator that asynchronously
 <br/><br/>
 Elevator Logs:
 <br/><br/>
-![image](https://user-images.githubusercontent.com/12031984/132577909-82a3b122-55e2-41dc-a535-60b3b45f4859.png)
+![image](https://user-images.githubusercontent.com/12031984/132961151-47f1bbb7-6570-4ca5-aa07-853abf94c2cd.png)
 <br/><br/>
+Bonus Enhancement:
+<br/><br/>
+![image](https://user-images.githubusercontent.com/12031984/132961074-21ed5b60-518d-44ec-a01f-0eeb36bcdc34.png)
 Test Results:
 <br/><br/>
 ![image](https://user-images.githubusercontent.com/12031984/131840824-74f32387-b278-48ae-9622-0c0f6ccdceb8.png)
